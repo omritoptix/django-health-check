@@ -1,7 +1,7 @@
 import copy
 from concurrent.futures import ThreadPoolExecutor
 
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.views.decorators.cache import never_cache
 from django.views.generic import TemplateView
 
@@ -46,3 +46,7 @@ class MainView(TemplateView):
             {str(p.identifier()): str(p.pretty_status()) for p in plugins},
             status=status
         )
+
+    def render_to_response(self, context, **response_kwargs):
+        status = response_kwargs.get('status')
+        return HttpResponse('pong' if status == 200 else 'sweaty', status=status)
